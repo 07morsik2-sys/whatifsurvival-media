@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>bridge</title>
+<body style="font:16px sans-serif;background:#111;color:#eee">bridge ready - keep this tab open
+<script>
+const ok=o=>/^https:\/\/([a-z0-9-]+\.)*tiktok\.com$/.test(o);
+window.addEventListener('message',async e=>{
+  if(!ok(e.origin)||!e.data||!e.data.url) return;
+  try{const r=await fetch(e.data.url);const b=await r.arrayBuffer();
+    e.source.postMessage({id:e.data.id,name:e.data.name,buf:b,status:r.status},e.origin,[b]);
+    document.body.append(' | sent '+e.data.name);
+  }catch(err){e.source.postMessage({id:e.data.id,error:String(err)},e.origin)}
+});
+if(window.opener) window.opener.postMessage({bridge:'ready'},'*');
+</script>
